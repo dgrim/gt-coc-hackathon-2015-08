@@ -3,4 +3,21 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/current_trip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top|center"
+        android:textSize="50dp"
+        android:layout_weight="5"/>
+
+    <Button
+        android:id="@+id/button_end_trip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/end_trip"
+        android:textAlignment="center"
+        />
+
+
 </LinearLayout>

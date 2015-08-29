@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class DashboardActivity extends Activity
@@ -134,6 +136,26 @@ public class DashboardActivity extends Activity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+
+            TextView stats = (TextView) rootView.findViewById(R.id.user_info);
+            TextView tirePressure = (TextView) rootView.findViewById(R.id.tire_pressure);
+            TextView avgSpeed = (TextView) rootView.findViewById(R.id.average_speed);
+            TextView statusLight = (TextView) rootView.findViewById(R.id.status_light);
+            TextView numHardBrakes = (TextView) rootView.findViewById(R.id.hard_braking);
+
+            numHardBrakes.append(TripActivity.getHardBrakes().toString());
+            tirePressure.append(TripActivity.getTirePressure().toString());
+            avgSpeed.append(TripActivity.getAverageSpeed());
+            statusLight.append(TripActivity.getStatus());
+
+            Button beginTrip = (Button) rootView.findViewById(R.id.button_begin_trip);
+            beginTrip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent tripIntent = new Intent(getActivity(),TripActivity.class);
+                    startActivity(tripIntent);
+                }
+            });
             return rootView;
         }
 
