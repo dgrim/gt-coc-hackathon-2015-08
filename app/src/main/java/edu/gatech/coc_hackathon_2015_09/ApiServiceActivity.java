@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -40,8 +41,11 @@ public class ApiServiceActivity extends Activity {
                 //JSONObject json = service.makePostRequest("/account/vehicles/1G6DH5E53C0000003/commands/diagnostics", null, body);
 
                 JSONObject json = null;
+                int num = 0;
                 try {
+                    //num = GM_API.getRequestID("1G6DH5E53C0000003");
                     json = GM_API.getTelemetryData("1G6DH5E53C0000003");
+                   // json = GM_API.getDiagnosticInfo("1G6DH5E53C0000003", num);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }

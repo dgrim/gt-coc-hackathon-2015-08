@@ -17,39 +17,39 @@ public class GM_API {
         TELEMETRY, HARD_BRAKE, HARD_ACCELERATION, DTC_NOTIFICATION
     }
 
-    public static void getOwenerInfo(String vin) throws UnsupportedEncodingException, MalformedURLException {
-        StringBuilder url = new StringBuilder("account/subscribers".replace("{vin}", URLEncoder.encode(vin, "UTF-8")));
+    public static JSONObject getOwenerInfo(String vin) throws UnsupportedEncodingException, MalformedURLException {
+        StringBuilder url = new StringBuilder("/account/subscribers".replace("{vin}", URLEncoder.encode(vin, "UTF-8")));
         url.append("?");
         url.append(URLEncoder.encode("offset","UTF-8") + "=" + URLEncoder.encode("0", "UTF-8") + "&");
         url.append(URLEncoder.encode("limit","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8") + "&");
         url.append(URLEncoder.encode("type","UTF-8") + "=" + URLEncoder.encode("OWNER", "UTF-8"));
 
-        NETWORK_SERVER.makeGetRequest(url.toString(), null).toString();
+        return NETWORK_SERVER.makeGetRequest(url.toString(), null);
     }
 
     public static void startIgnition(String vin) throws UnsupportedEncodingException {
-        StringBuilder url = new StringBuilder("account/vehicles/{vin}/commands/enableIgnition".replace("{vin}", URLEncoder.encode(vin, "UTF-8")));
+        StringBuilder url = new StringBuilder("/account/vehicles/{vin}/commands/enableIgnition".replace("{vin}", URLEncoder.encode(vin, "UTF-8")));
         NETWORK_SERVER.makePostRequest(url.toString(), null, null);
 
-        url = new StringBuilder("account/vehicles/{vin}/commands/start".replace("{vin}", URLEncoder.encode(vin, "UTF-8")));
+        url = new StringBuilder("/account/vehicles/{vin}/commands/start".replace("{vin}", URLEncoder.encode(vin, "UTF-8")));
         NETWORK_SERVER.makePostRequest(url.toString(), null, null);
     }
 
     public static int getRequestID(String vin) throws UnsupportedEncodingException, JSONException {
-        StringBuilder url = new StringBuilder("account/vehicles/{vin}/commands/diagnostics".replace("{vin}", URLEncoder.encode(vin, "UTF-8")));
-        String body = "{  \"diagnosticsRequest\": {    \"diagnosticItem\": [      \"FUEL TANK INFO\",      \"OIL LIFE\",      \"TIRE PRESSURE\",    ]  }}";
+        StringBuilder url = new StringBuilder("/account/vehicles/{vin}/commands/diagnostics".replace("{vin}", URLEncoder.encode(vin, "UTF-8")));
+        String body = "{  \"diagnosticsRequest\": {    \"diagnosticItem\": [      \"FUEL TANK INFO\",      \"OIL LIFE\",      \"TIRE PRESSURE\"    ]  }}";
         JSONObject json = NETWORK_SERVER.makePostRequest(url.toString(), null, body);
 
-        String returnedURL = json.getString("url");
+        String returnedURL = json.getJSONObject("commandResponse").getString("url");
         return Integer.parseInt(returnedURL.substring(returnedURL.indexOf("requests/") + 10, returnedURL.length()));
     }
 
-    public static void getDiagnosticInfo(String vin, int latestRequestID) throws UnsupportedEncodingException {
-        StringBuilder url = new StringBuilder("account/vehicles/{vin}/requests/{requestId}".replace("{vin}", URLEncoder.encode(vin, "UTF-8")).replace("{requestId}", URLEncoder.encode("" + latestRequestID, "UTF-8")));
+    public static JSONObject getDiagnosticInfo(String vin, int latestRequestID) throws UnsupportedEncodingException {
+        StringBuilder url = new StringBuilder("/account/vehicles/{vin}/requests/{requestId}".replace("{vin}", URLEncoder.encode(vin, "UTF-8")).replace("{requestId}", URLEncoder.encode("" + latestRequestID, "UTF-8")));
         url.append("?");
-        url.append(URLEncoder.encode("units","UTF-8") + "=" + URLEncoder.encode("METRIC", "UTF-8"));
+        url.append(URLEncoder.encode("units", "UTF-8") + "=" + URLEncoder.encode("METRIC", "UTF-8"));
 
-        NETWORK_SERVER.makeGetRequest(url.toString(), null);
+        return NETWORK_SERVER.makeGetRequest(url.toString(), null);
     }
 
     public static JSONObject getTelemetryData(String vin) throws UnsupportedEncodingException {
@@ -80,7 +80,7 @@ public class GM_API {
             type = "DTC_NOTIFICATION";
         }
 
-        StringBuilder url = new StringBuilder("account/vehicles/{vin}/data/services/{service_code}".replace("{vin}", URLEncoder.encode(vin, "UTF-8")).replace("{service_code}", URLEncoder.encode(type, "UTF-8")));
+        StringBuilder url = new StringBuilder("/account/vehicles/{vin}/data/services/{service_code}".replace("{vin}", URLEncoder.encode(vin, "UTF-8")).replace("{service_code}", URLEncoder.encode(type, "UTF-8")));
         url.append("?");
         url.append(URLEncoder.encode("from", "UTF-8") + "=" + URLEncoder.encode("1990-10-05T19:00:00.000Z", "UTF-8") + "&");
         url.append(URLEncoder.encode("to", "UTF-8") + "=" + URLEncoder.encode("2015-8-05T19:00:00.000Z", "UTF-8") + "&");
