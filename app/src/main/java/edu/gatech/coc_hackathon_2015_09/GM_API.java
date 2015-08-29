@@ -56,10 +56,13 @@ public class GM_API {
             JSONObject response = null;
             do {
                 response = NETWORK_SERVER.makeGetRequest(url.toString(), null);
+                Thread.sleep(2000);
             } while(response.getJSONObject("commandResponse").getString("status").equals("inProgress"));
 
             return response;
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
