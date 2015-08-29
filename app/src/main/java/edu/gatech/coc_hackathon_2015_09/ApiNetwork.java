@@ -54,7 +54,7 @@ public class ApiNetwork {
      * related to the media shortcode endpoint of the Instagram API.
      */
     public ApiNetwork() {
-
+        setToken();
     }
 
     /**

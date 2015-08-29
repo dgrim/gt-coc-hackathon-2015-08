@@ -32,7 +32,6 @@ public class ApiServiceActivity extends Activity {
             @Override
             public void onClick(View v) {
                 ApiNetwork service = new ApiNetwork();
-                service.setToken();
                 //textView.setText(service.accessToken);
                 JSONObject json = service.makeGetRequest("/account/vehicles?offset=0&size=2", null);
                 //JSONObject json = service.makePostRequest("/account/vehicles/1G6DH5E53C0000003/commands/start", null, null);
