@@ -66,7 +66,9 @@ public class ApiNetwork {
     public JSONObject makeGetRequest(String urlStr, Map<String, String> parameters) {
         JSONObject responseJSON = null;
         try{
-            URL url = new URL(String.format("%s%s", ENDPOINT, urlStr));
+            String urlString = urlStr.startsWith(ENDPOINT) ? urlStr : String.format("%s%s", ENDPOINT, urlStr);
+            URL url =  new URL(urlString);
+
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
 
@@ -108,7 +110,9 @@ public class ApiNetwork {
     public JSONObject makePostRequest(String urlStr, Map<String, String> parameters, String body) {
         JSONObject responseJSON = null;
         try{
-            URL url = new URL(String.format("%s%s", ENDPOINT, urlStr));
+            String urlString = urlStr.startsWith(ENDPOINT) ? urlStr : String.format("%s%s", ENDPOINT, urlStr);
+            URL url =  new URL(urlString);
+
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
 
