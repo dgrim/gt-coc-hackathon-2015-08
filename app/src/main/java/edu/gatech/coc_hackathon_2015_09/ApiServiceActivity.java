@@ -10,6 +10,7 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by dgrim on 8/29/15.
@@ -31,12 +32,19 @@ public class ApiServiceActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ApiNetwork service = new ApiNetwork();
+                //ApiNetwork service = new ApiNetwork();
                 //textView.setText(service.accessToken);
                 //JSONObject json = service.makeGetRequest("/account/vehicles?offset=0&size=2", null);
                 //JSONObject json = service.makePostRequest("/account/vehicles/1G6DH5E53C0000003/commands/start", null, null);
-                String body = "{  \"diagnosticsRequest\": {    \"diagnosticItem\": [      \"FUEL TANK INFO\",      \"LAST TRIP DISTANCE\",      \"LAST TRIP FUEL ECONOMY\",      \"LIFETIME FUEL ECON\",      \"LIFETIME FUEL USED\",      \"ODOMETER\",      \"OIL LIFE\",      \"TIRE PRESSURE\",      \"VEHICLE RANGE\"    ]  }}";
-                JSONObject json = service.makePostRequest("/account/vehicles/1G6DH5E53C0000003/commands/diagnostics", null, body);
+                //String body = "{  \"diagnosticsRequest\": {    \"diagnosticItem\": [      \"FUEL TANK INFO\",      \"LAST TRIP DISTANCE\",      \"LAST TRIP FUEL ECONOMY\",      \"LIFETIME FUEL ECON\",      \"LIFETIME FUEL USED\",      \"ODOMETER\",      \"OIL LIFE\",      \"TIRE PRESSURE\",      \"VEHICLE RANGE\"    ]  }}";
+                //JSONObject json = service.makePostRequest("/account/vehicles/1G6DH5E53C0000003/commands/diagnostics", null, body);
+
+                JSONObject json = null;
+                try {
+                    json = GM_API.getTelemetryData("1G6DH5E53C0000003");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
 
                 textView.setText(json.toString());
             }
