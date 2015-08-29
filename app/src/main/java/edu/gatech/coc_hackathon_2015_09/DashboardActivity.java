@@ -147,6 +147,7 @@ public class DashboardActivity extends Activity
             TextView avgSpeed = (TextView) rootView.findViewById(R.id.average_speed);
             TextView statusLight = (TextView) rootView.findViewById(R.id.status_light);
             TextView numHardBrakes = (TextView) rootView.findViewById(R.id.hard_braking);
+            TextView score = (TextView) rootView.findViewById(R.id.score);
             EditText vinEditText = (EditText) rootView.findViewById(R.id.vin);
 
             vinEditText.addTextChangedListener(new TextWatcher() {
@@ -174,8 +175,9 @@ public class DashboardActivity extends Activity
             if (TripActivity.finishedDriving()) {
                 numHardBrakes.append(TripActivity.getHardBrakes().toString());
                 tirePressure.append(TripActivity.getTirePressure().toString());
-                avgSpeed.append(TripActivity.getAverageSpeed());
+                avgSpeed.append(TripActivity.getAverageSpeed().toString() + " mph");
                 statusLight.append(TripActivity.getStatus());
+                score.append(TripActivity.calculateScore().toString());
             }
 
 

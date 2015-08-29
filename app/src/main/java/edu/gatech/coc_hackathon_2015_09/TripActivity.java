@@ -94,13 +94,13 @@ public class TripActivity extends Activity {
 
 
 
-    protected static String getAverageSpeed() {
+    protected static Double getAverageSpeed() {
         double sum = 0.0;
         for (int i = 0; i < mSpeedMap.size(); i++) {
             sum += mSpeedMap.get(i);
         }
 
-        return (sum / mSpeedMap.size()) + " mph";
+        return (sum / mSpeedMap.size());
     }
 
     protected static String getStatus() {
@@ -118,5 +118,29 @@ public class TripActivity extends Activity {
         mSpeedMap.put(0, speed);
     }
 
+    protected static Integer calculateScore() {
+        int score = 0;
+        if (getStatus().toLowerCase().equals("green")) {
+            score += 10;
+        } else if (getStatus().toLowerCase().equals("yellow")) {
+            score += 5;
+        } else {
+            score -= 5;
+        }
 
+        if (getHardBrakes() < 3) {
+            score += 10;
+        } else {
+            score -= 3;
+        }
+
+        if (getAverageSpeed() < 55.0) {
+            score += 15;
+        } else if (getAverageSpeed() < 70.0) {
+            score += 5;
+        } else {
+            score -= 10;
+        }
+        return score;
+    }
 }
