@@ -112,6 +112,7 @@ public class ApiNetwork {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
 
+
             if(null == parameters){
                 parameters = new HashMap<String, String>();
             }
@@ -128,11 +129,14 @@ public class ApiNetwork {
 
             if(null != body){
                 //write to output stream.
-                connection.setRequestProperty("Content-Type","application/json");
+
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "application/json");
+
                 byte[] outputInBytes = body.getBytes("UTF-8");
-                OutputStream os = connection.getOutputStream();
-                os.write(outputInBytes);
-                os.close();
+                connection.setFixedLengthStreamingMode(outputInBytes.length);
+
+                connection.getOutputStream().write(outputInBytes);
             }
 
             // get response in bytes.
