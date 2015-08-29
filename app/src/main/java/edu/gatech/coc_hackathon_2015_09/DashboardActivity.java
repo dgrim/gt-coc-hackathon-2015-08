@@ -9,6 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +21,7 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class DashboardActivity extends Activity
@@ -32,6 +36,7 @@ public class DashboardActivity extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private static String mVinString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,11 +147,37 @@ public class DashboardActivity extends Activity
             TextView avgSpeed = (TextView) rootView.findViewById(R.id.average_speed);
             TextView statusLight = (TextView) rootView.findViewById(R.id.status_light);
             TextView numHardBrakes = (TextView) rootView.findViewById(R.id.hard_braking);
+            EditText vinEditText = (EditText) rootView.findViewById(R.id.vin);
 
-            numHardBrakes.append(TripActivity.getHardBrakes().toString());
-            tirePressure.append(TripActivity.getTirePressure().toString());
-            avgSpeed.append(TripActivity.getAverageSpeed());
-            statusLight.append(TripActivity.getStatus());
+            vinEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    mVinString = s.toString();
+                    Log.i("Test", mVinString);
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+
+
+
+
+
+            if (TripActivity.finishedDriving()) {
+                numHardBrakes.append(TripActivity.getHardBrakes().toString());
+                tirePressure.append(TripActivity.getTirePressure().toString());
+                avgSpeed.append(TripActivity.getAverageSpeed());
+                statusLight.append(TripActivity.getStatus());
+            }
+
 
             Button beginTrip = (Button) rootView.findViewById(R.id.button_begin_trip);
             beginTrip.setOnClickListener(new View.OnClickListener() {

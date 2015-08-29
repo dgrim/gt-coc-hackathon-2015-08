@@ -8,12 +8,17 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.lang.Override;
+import java.util.HashMap;
 
 public class TripActivity extends Activity {
 
     TextView mTitleTextView;
     Button mEndTripButton;
-    boolean mCurrentlyDriving;
+    static boolean mCurrentlyDriving;
+    static boolean mFinishedDriving;
+    static double mTirePressure;
+    static HashMap<Integer, Double> mSpeedMap = new HashMap<>();
+    static String mVehicleStatus;
 
 
     @Override
@@ -24,11 +29,14 @@ public class TripActivity extends Activity {
         mTitleTextView = (TextView) findViewById(R.id.current_trip);
         mEndTripButton = (Button) findViewById(R.id.button_end_trip);
 
-        //Malfunction light code
+        //Engine Status code
+        setVehicleStatus();
 
         //tire pressure code
+        setTirePressure();
 
         //start engine
+        startEngine();
 
         //start TripService
 
@@ -37,12 +45,14 @@ public class TripActivity extends Activity {
             public void onClick(View view) {
                 //stop engine
                 mCurrentlyDriving = false;
+                mFinishedDriving = true;
                 Intent dashboardIntent = new Intent(getApplicationContext(), DashboardActivity.class);
                 startActivity(dashboardIntent);
             }
         });
 
         //Start service
+
 
     }
 
@@ -54,19 +64,59 @@ public class TripActivity extends Activity {
         }
     }
 
+    protected void setTirePressure() {
+        double tirePressure = 0.0;
+        //Use API for tire pressure and save value into tirePressure;
+
+
+        mTirePressure = tirePressure;
+    }
+
+    protected void setVehicleStatus() {
+        mVehicleStatus= "Green";
+        //code for engine light, set result to 'status'
+
+    }
+
+    protected void startEngine() {
+        //code to start engine
+    }
+
+
+
     protected static Integer getHardBrakes() {
         return 4323;
     }
 
-    protected static Integer getTirePressure() {
-        return 0;
+    protected static Double getTirePressure() {
+        return mTirePressure;
     }
 
+
+
     protected static String getAverageSpeed() {
-        return 55 + " mph";
+        double sum = 0.0;
+        for (int i = 0; i < mSpeedMap.size(); i++) {
+            sum += mSpeedMap.get(i);
+        }
+
+        return (sum / mSpeedMap.size()) + " mph";
     }
 
     protected static String getStatus() {
-        return "Good";
+        return mVehicleStatus;
     }
+
+    protected static boolean finishedDriving() {
+        return mFinishedDriving;
+    }
+
+    protected void  getCurrentSpeed() {
+        double speed = 0.0;
+        int counter = 0;
+        //code to get current speed, save result in 'speed'
+        mSpeedMap.put(0, speed);
+    }
+
+
 }

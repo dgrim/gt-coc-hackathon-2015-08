@@ -19,8 +19,8 @@
             android:id="@+id/user_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Stats"
-            android:textSize="50dp" />
+            android:text="Recent Trip Stats"
+            android:textSize="40dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -46,9 +46,20 @@
             android:text="Average Speed: "
             android:id="@+id/average_speed"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Score: "/>
+
+
+
     </LinearLayout>
 
-
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="VIN for next trip: "
+        android:id="@+id/vin"/>
 
     <Button
         android:id="@+id/button_begin_trip"
