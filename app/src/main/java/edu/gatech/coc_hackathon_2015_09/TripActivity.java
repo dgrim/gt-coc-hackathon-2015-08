@@ -3,10 +3,16 @@ package edu.gatech.coc_hackathon_2015_09;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.lang.Override;
 import java.util.HashMap;
 
@@ -16,9 +22,10 @@ public class TripActivity extends Activity {
     Button mEndTripButton;
     static boolean mCurrentlyDriving;
     static boolean mFinishedDriving;
-    static double mTirePressure;
+    static String mTirePressure;
     static HashMap<Integer, Double> mSpeedMap = new HashMap<>();
     static String mVehicleStatus;
+    static String vin = "1G6DH5E53C0000003";
 
 
     @Override
@@ -26,8 +33,13 @@ public class TripActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.trip_layout);
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         mTitleTextView = (TextView) findViewById(R.id.current_trip);
         mEndTripButton = (Button) findViewById(R.id.button_end_trip);
+
+        //get the list of diagnostic info
 
         //Engine Status code
         setVehicleStatus();
@@ -60,16 +72,45 @@ public class TripActivity extends Activity {
     public void onResume() {
         super.onResume();
         while (mCurrentlyDriving) {
+
             //ApiRequests
         }
     }
 
     protected void setTirePressure() {
-        double tirePressure = 0.0;
+        String color = "GREEN";
+
+        try {
+            JSONObject diagnostics = GM_API.getDiagnosticInfo(vin);
+            JSONArray jsonArr = diagnostics.getJSONObject("commandResponse").getJSONObject("body").getJSONArray("diagnosticResponse");
+            for (int i = 0; i < jsonArr.length(); i++) {
+                JSONObject nestedObj = jsonArr.getJSONObject(i);
+                String name = nestedObj.getString("name");
+                if (name.equals("TIRE PRESSURE")) {
+                    JSONArray tires = nestedObj.getJSONArray("diagnosticElement");
+                    for (int j = 0; j < tires.length(); j++) {
+                        ;
+                        if (tires.getJSONObject(i).getString("message").equals("RED")) {
+                            color = "RED";
+                            break;
+                        } else if (tires.getJSONObject(i).getString("message").equals("YELLOW")) {
+                            color = "YELLOW";
+                        }
+
+                    }
+                }
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
         //Use API for tire pressure and save value into tirePressure;
 
 
-        mTirePressure = tirePressure;
+        mTirePressure = color;
     }
 
     protected void setVehicleStatus() {
@@ -88,7 +129,7 @@ public class TripActivity extends Activity {
         return 4323;
     }
 
-    protected static Double getTirePressure() {
+    protected static String getTirePressure() {
         return mTirePressure;
     }
 
@@ -99,8 +140,8 @@ public class TripActivity extends Activity {
         for (int i = 0; i < mSpeedMap.size(); i++) {
             sum += mSpeedMap.get(i);
         }
-
-        return (sum / mSpeedMap.size());
+        //return (sum / mSpeedMap.size());
+        return 42.0;
     }
 
     protected static String getStatus() {
