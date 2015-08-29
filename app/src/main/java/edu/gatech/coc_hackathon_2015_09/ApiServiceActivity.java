@@ -44,7 +44,8 @@ public class ApiServiceActivity extends Activity {
                 int num = 0;
                 try {
                     //num = GM_API.getRequestID("1G6DH5E53C0000003");
-                    json = GM_API.getTelemetryData("1G6DH5E53C0000003");
+                    //json = GM_API.getTelemetryData("1G6DH5E53C0000003");
+                    json = GM_API.getDiagnosticInfo("1G6DH5E53C0000003");
                    // json = GM_API.getDiagnosticInfo("1G6DH5E53C0000003", num);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();

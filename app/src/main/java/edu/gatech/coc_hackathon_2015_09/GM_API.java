@@ -20,9 +20,9 @@ public class GM_API {
     public static JSONObject getOwenerInfo(String vin) throws UnsupportedEncodingException, MalformedURLException {
         StringBuilder url = new StringBuilder("/account/subscribers".replace("{vin}", URLEncoder.encode(vin, "UTF-8")));
         url.append("?");
-        url.append(URLEncoder.encode("offset","UTF-8") + "=" + URLEncoder.encode("0", "UTF-8") + "&");
+        url.append(URLEncoder.encode("offset", "UTF-8") + "=" + URLEncoder.encode("0", "UTF-8") + "&");
         url.append(URLEncoder.encode("limit","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8") + "&");
-        url.append(URLEncoder.encode("type","UTF-8") + "=" + URLEncoder.encode("OWNER", "UTF-8"));
+        url.append(URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode("OWNER", "UTF-8"));
 
         return NETWORK_SERVER.makeGetRequest(url.toString(), null);
     }
@@ -35,21 +35,35 @@ public class GM_API {
         NETWORK_SERVER.makePostRequest(url.toString(), null, null);
     }
 
-    public static int getRequestID(String vin) throws UnsupportedEncodingException, JSONException {
+    public static String getDiagnosticUrl(String vin) throws UnsupportedEncodingException, JSONException {
         StringBuilder url = new StringBuilder("/account/vehicles/{vin}/commands/diagnostics".replace("{vin}", URLEncoder.encode(vin, "UTF-8")));
         String body = "{  \"diagnosticsRequest\": {    \"diagnosticItem\": [      \"FUEL TANK INFO\",      \"OIL LIFE\",      \"TIRE PRESSURE\"    ]  }}";
         JSONObject json = NETWORK_SERVER.makePostRequest(url.toString(), null, body);
 
         String returnedURL = json.getJSONObject("commandResponse").getString("url");
-        return Integer.parseInt(returnedURL.substring(returnedURL.indexOf("requests/") + 10, returnedURL.length()));
+
+        //return returnedURL.substring(returnedURL.indexOf("requests/") + 10, returnedURL.length());
+        return returnedURL;
     }
 
-    public static JSONObject getDiagnosticInfo(String vin, int latestRequestID) throws UnsupportedEncodingException {
-        StringBuilder url = new StringBuilder("/account/vehicles/{vin}/requests/{requestId}".replace("{vin}", URLEncoder.encode(vin, "UTF-8")).replace("{requestId}", URLEncoder.encode("" + latestRequestID, "UTF-8")));
-        url.append("?");
-        url.append(URLEncoder.encode("units", "UTF-8") + "=" + URLEncoder.encode("METRIC", "UTF-8"));
 
-        return NETWORK_SERVER.makeGetRequest(url.toString(), null);
+    public static JSONObject getDiagnosticInfo(String vin) throws UnsupportedEncodingException {
+        StringBuilder url = null;
+        try {
+            url = new StringBuilder(getDiagnosticUrl(vin));
+            url.append("?");
+            url.append(URLEncoder.encode("units", "UTF-8") + "=" + URLEncoder.encode("METRIC", "UTF-8"));
+            JSONObject response = null;
+            do {
+                response = NETWORK_SERVER.makeGetRequest(url.toString(), null);
+            } while(response.getJSONObject("commandResponse").getString("status").equals("inProgress"));
+
+            return response;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public static JSONObject getTelemetryData(String vin) throws UnsupportedEncodingException {
@@ -89,4 +103,5 @@ public class GM_API {
 
         return NETWORK_SERVER.makeGetRequest(url.toString(), null);
     }
+
 }
